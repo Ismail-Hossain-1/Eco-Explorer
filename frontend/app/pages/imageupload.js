@@ -55,7 +55,7 @@ const ImageUpload = () => {
       // Second request: to generate data based on the prediction
       const generateResponse = await axios.post(
         "http://127.0.0.1:5000/generate",
-        { flower: "Tulip" }, // Sending the prediction value
+        { flower: response.data.predicted_class }, // Sending the prediction value
         {
           headers: {
             "Content-Type": "application/json",
@@ -65,6 +65,7 @@ const ImageUpload = () => {
 
       // Store the generated data in the state
       setGeneratedData(generateResponse.data);
+      speakText(generateResponse.data.description)
 
     } catch (err) {
       setError("Error during classification: " + err.message);
@@ -73,21 +74,41 @@ const ImageUpload = () => {
     }
   };
 
+  const speakText = (textToSpeak) => {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(textToSpeak);
+
+      // Optionally, you can modify the speech parameters
+      utterance.lang = 'en-US';
+      utterance.rate = 1;  // Speed of speech
+      utterance.pitch = 1; // Pitch of speech
+
+      // Use the SpeechSynthesis API to speak the text
+      window.speechSynthesis.speak(utterance);
+    } else {
+      alert('Sorry, your browser does not support speech synthesis.');
+    }
+  };
+
+  // const handleClick = () => {
+  //   speakText(text);
+  // };
+
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-50 pt-32">
-  <div className="bg-white p-8 rounded-lg shadow-xl w-full sm:w-3/4 md:w-2/3 lg:w-1/2 flex flex-col sm:flex-row space-y-6 sm:space-y-0 sm:space-x-8">
+    <div className="flex justify-center items-center h-full w-screen bg-gray-50 mt-0 sm:mt-64 lg:mt-20">
+  <div className={`bg-blue-200 sm:md:flex-col lg:flex-row p-8 rounded-lg shadow-xl  sm:w-3/4 md:w-3/4 lg:w-10/12 flex flex-col sm:flex-row ${!generatedData? "justify-center items-center":""}  space-y-6 sm:space-y-0 sm:space-x-8`}>
 
     {/* Left Section (Input + Prediction) */}
-    <div className="flex-1">
-      <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">Image Classification</h1>
+    <div className="flex-col lg:w-4/12 sm:md:w-full items-center justify-center">
+      <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">Image Input</h1>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
+      <form onSubmit={handleSubmit} className="space-y-4 flex  justify-center flex-col">
+        <div className="">
           <input
             type="file"
             onChange={handleImageChange}
             accept="image/*"
-            className="block w-full text-sm text-gray-700 border border-gray-300 rounded-lg p-3"
+            className="block w-full text-sm text-gray-700 border border-b-blue-950 rounded-lg p-3"
           />
         </div>
 
@@ -114,16 +135,16 @@ const ImageUpload = () => {
       {error && <p className="mt-4 text-red-500 text-center">{error}</p>}
       {prediction !== null && (
         <div className="mt-4 text-center">
-          <h3 className="text-lg font-medium text-gray-800">Predicted Class: {prediction}</h3>
+          <h3 className="text-lg font-bold text-gray-800 ">Predicted Class: {prediction}</h3>
         </div>
       )}
     </div>
 
     {/* Right Section (Generated Data) */}
-    <div className="flex-1">
+    <div className="flex-1 lg:w-8/12 sm:md:w-full">
       {generatedData && (
         <div className="mt-4 p-6 bg-gray-100 rounded-lg shadow-lg">
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">Flower Information:</h3>
+          <h3 className="text-xl font-semibold text-gray-800 mb-4">Flower Description:</h3>
           <p className="text-base text-gray-700 leading-relaxed whitespace-pre-line">{generatedData.description}</p>
         </div>
       )}

@@ -6,8 +6,8 @@ import { useAuth } from "../context/AuthContext"; // Adjust the import path as n
 export default function Navbar() {
 
     const {logout,user } = useAuth(); // Assuming you have a logout function in your auth context
-    //if(user===null) return null; // If user is not logged in, don't render the navbar
-    
+    if(user===null) return null; // If user is not logged in, don't render the navbar
+    //console.log(user);
     return (
         <nav className="bg-white shadow-lg py-4 px-6 fixed w-full top-0 z-50 ">
             <div className="container mx-auto flex justify-between items-center">

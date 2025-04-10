@@ -11,8 +11,8 @@ export default function Navbar() {
     return (
         <nav className="bg-white shadow-lg py-4 px-6 fixed w-full top-0 z-50 ">
             <div className="container mx-auto flex justify-between items-center">
-                <Link href="/" className="text-2xl font-bold text-blue-600">
-                    MyApp
+                <Link href="/" className="text-2xl font-bold text-green-600 font-serif">
+                Eco-Explorer
                 </Link>
                 <ul className="flex space-x-6">
                     <li>

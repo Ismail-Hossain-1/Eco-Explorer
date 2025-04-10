@@ -8,19 +8,21 @@ from pydantic import BaseModel
 from flask import Blueprint, request, jsonify
 from flask_cors import cross_origin
 
-question_bp= Blueprint('question', __name__)
+overview_bp= Blueprint('overview', __name__)
 
 
 
 api_key= os.getenv('GOOGLE_AI_API')
 client = genai.Client(api_key=api_key)
-  
+
+
+
 class Description(BaseModel):
     overview: str
     description: str
     
 
-@question_bp.route('/', methods=['POST'])
+@overview_bp.route('/', methods=['POST'])
 @cross_origin(origins="http://localhost:3000/*")
 def generate_question():
     data= request.get_json()

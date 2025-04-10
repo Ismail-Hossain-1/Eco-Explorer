@@ -7,7 +7,8 @@ from PIL import Image
 from dotenv import load_dotenv
 import io
 
-from routes.generate import question_bp
+from routes.generate import overview_bp
+from routes.questions import question_bp
 
 load_dotenv()
 
@@ -16,7 +17,8 @@ load_dotenv()
 
 app = Flask(__name__)
 
-app.register_blueprint(question_bp, url_prefix='/generate')
+app.register_blueprint(overview_bp, url_prefix='/generate')
+app.register_blueprint(question_bp, url_prefix='/questions')
 
 # Enable CORS for all routes
 CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})

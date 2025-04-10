@@ -65,7 +65,7 @@ const ImageUpload = () => {
 
       // Store the generated data in the state
       setGeneratedData(generateResponse.data);
-      speakText(generateResponse.data.description)
+     // speakText(generateResponse.data.description)
 
     } catch (err) {
       setError("Error during classification: " + err.message);
@@ -92,66 +92,82 @@ const ImageUpload = () => {
 
   // const handleClick = () => {
   //   speakText(text);
-  // };
+  // };  
 
   return (
-    <div className="flex justify-center items-center h-full w-screen bg-gray-50 mt-0 sm:mt-64 lg:mt-20">
-  <div className={`bg-blue-200 sm:md:flex-col lg:flex-row p-8 rounded-lg shadow-xl  sm:w-3/4 md:w-3/4 lg:w-10/12 flex flex-col sm:flex-row ${!generatedData? "justify-center items-center":""}  space-y-6 sm:space-y-0 sm:space-x-8`}>
+    <div className="flex flex-col justify-center items-center min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
+      <div className={`bg-white rounded-lg shadow-lg p-8 w-full max-w-5xl ${!generatedData ? "flex flex-col items-center" : ""}`}>
+        
+        {/* Header */}
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">Image Upload and Classification</h1>
 
-    {/* Left Section (Input + Prediction) */}
-    <div className="flex-col lg:w-4/12 sm:md:w-full items-center justify-center">
-      <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">Image Input</h1>
+        <div className="flex flex-col lg:flex-row w-full space-y-8 lg:space-y-0 lg:space-x-8">
+          
+          {/* Left Section (Input + Prediction) */}
+          <div className="lg:w-5/12 flex flex-col items-center">
+            <h2 className="text-2xl font-semibold text-gray-700 mb-6">Upload Your Image</h2>
+            
+            <form onSubmit={handleSubmit} className="w-full space-y-4">
+              <input
+                type="file"
+                onChange={handleImageChange}
+                accept="image/*"
+                className="block w-full text-sm text-gray-700 border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
 
-      <form onSubmit={handleSubmit} className="space-y-4 flex  justify-center flex-col">
-        <div className="">
-          <input
-            type="file"
-            onChange={handleImageChange}
-            accept="image/*"
-            className="block w-full text-sm text-gray-700 border border-b-blue-950 rounded-lg p-3"
-          />
-        </div>
+              {/* Show image preview if available */}
+              {imagePreview && (
+                <div className="mt-4">
+                  <img
+                    src={imagePreview}
+                    alt="Image preview"
+                    className="w-full h-auto border border-gray-300 rounded-md"
+                  />
+                </div>
+              )}
 
-        {/* Show image preview if available */}
-        {imagePreview && (
-          <div className="mt-4 text-center">
-            <img
-              src={imagePreview}
-              alt="Image preview"
-              className="max-w-full h-auto border border-gray-300 rounded-md"
-            />
+              <button
+                type="submit"
+                disabled={loading}
+                className={`w-full py-3 px-6 text-white font-semibold rounded-lg ${loading ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600"} transition-all duration-300`}
+              >
+                {loading ? "Classifying..." : "Classify Image"}
+              </button>
+            </form>
+
+            {error && <p className="mt-4 text-red-500 text-center">{error}</p>}
+            {prediction !== null && (
+              <div className="mt-4 text-center">
+                <h3 className="text-lg font-bold text-gray-800">Predicted Class: {prediction}</h3>
+              </div>
+            )}
           </div>
-        )}
 
-        <button
-          type="submit"
-          disabled={loading}
-          className={`w-full py-3 px-6 text-white font-semibold rounded-lg ${loading ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600"} transition-all duration-300`}
-        >
-          {loading ? "Classifying..." : "Classify Image"}
-        </button>
-      </form>
-
-      {error && <p className="mt-4 text-red-500 text-center">{error}</p>}
-      {prediction !== null && (
-        <div className="mt-4 text-center">
-          <h3 className="text-lg font-bold text-gray-800 ">Predicted Class: {prediction}</h3>
+          {/* Right Section (Generated Data) */}
+          <div className="lg:w-7/12">
+            {generatedData ? (
+              <div className="space-y-6">
+                <div className="p-6 bg-gray-100 rounded-lg shadow-md">
+                  <h3 className="text-xl font-semibold text-gray-800 mb-4">Flower Description</h3>
+                  <p className="text-base text-gray-700 leading-relaxed whitespace-pre-line">{generatedData.description}</p>
+                </div>
+                <div className="p-6 bg-gray-100 rounded-lg shadow-md">
+                  <h3 className="text-xl font-semibold text-gray-800 mb-4">Overview</h3>
+                  <p className="text-base text-gray-700 leading-relaxed whitespace-pre-line">{generatedData.overview}</p>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <p className="text-gray-500 text-center">Upload an image to see the results.</p>
+              </div>
+            )}
+          </div>
         </div>
-      )}
+      </div>
+     { prediction && <div className="flex flex-col justify-center w-screen h-20 bg-gray-200 mt-8">
+              <button type="button" className="btn">Test Yourself</button>
+      </div> }
     </div>
-
-    {/* Right Section (Generated Data) */}
-    <div className="flex-1 lg:w-8/12 sm:md:w-full">
-      {generatedData && (
-        <div className="mt-4 p-6 bg-gray-100 rounded-lg shadow-lg">
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">Flower Description:</h3>
-          <p className="text-base text-gray-700 leading-relaxed whitespace-pre-line">{generatedData.description}</p>
-        </div>
-      )}
-    </div>
-  </div>
-</div>
-
   );
 };
 

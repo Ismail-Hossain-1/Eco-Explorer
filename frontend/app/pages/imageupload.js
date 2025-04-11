@@ -5,6 +5,7 @@ import axios from "axios";
 
 import { useAuth } from "../context/AuthContext";
 import { Router } from "next/router";
+import GenerateMCQ from "../components/generatemcq"; 
 
 const ImageUpload = () => {
   const [image, setImage] = useState(null);
@@ -13,6 +14,7 @@ const ImageUpload = () => {
   const [generatedData, setGeneratedData] = useState(null); // State to hold generated data from /generate
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [mcq, setMcq] = useState(null);
   
   const { user } = useAuth(); // Access the user from AuthContext
   
@@ -94,6 +96,19 @@ const ImageUpload = () => {
   //   speakText(text);
   // };  
 
+  const handleMCQ = async (e) => { 
+    e.preventDefault()
+    const response = await axios.post('http://localhost:5000/questions', 
+      {
+        flower: prediction
+      }
+    )
+    const mcqData = response.data
+    setMcq(mcqData)
+  }
+
+
+
   return (
     <div className="flex flex-col justify-center items-center min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
       <div className={`bg-white rounded-lg shadow-lg p-8 w-full max-w-5xl ${!generatedData ? "flex flex-col items-center" : ""}`}>
@@ -158,15 +173,30 @@ const ImageUpload = () => {
               </div>
             ) : (
               <div className="flex items-center justify-center h-full">
-                <p className="text-gray-500 text-center">Upload an image to see the results.</p>
+                <p className="text-gray-500 text-center">Upload an image to see more about it.</p>
               </div>
             )}
           </div>
         </div>
       </div>
-     { prediction && <div className="flex flex-col justify-center w-screen h-20 bg-gray-200 mt-8">
-              <button type="button" className="btn">Test Yourself</button>
-      </div> }
+
+      {prediction && (
+        <div className="flex flex-col justify-center w-screen h-20 bg-gray-200 mt-8">
+          <button 
+            type="button" 
+            onClick={handleMCQ} 
+            className="px-6 py-3 bg-gradient-to-r from-green-400 to-blue-500 text-white font-semibold rounded-lg shadow-md hover:from-green-500 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-green-300 focus:ring-offset-2 transition-all duration-300"
+          >
+            Test Yourself
+          </button>
+        </div>
+      )}
+
+      {mcq && (
+        <div className="w-full max-w-5xl mt-8">
+          <GenerateMCQ mcq={mcq} />
+        </div>
+      )}
     </div>
   );
 };

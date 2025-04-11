@@ -16,8 +16,8 @@ class QuestionFormat(BaseModel):
 
 @question_bp.route('/', methods=['POST'])
 def generate_question():
-   # data= request.get_json()
-    flower= "Tulip" #data['flower']
+    data= request.get_json()
+    flower= data['flower']
     
     if request.method == 'OPTIONS':
         return '', 200

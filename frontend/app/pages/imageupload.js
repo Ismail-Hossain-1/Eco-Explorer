@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
+import {supabase} from "../supabase/supabaseClient";
 import { useAuth } from "../context/AuthContext";
 import { Router } from "next/router";
 import GenerateMCQ from "../components/generatemcq"; 
@@ -54,10 +55,9 @@ const ImageUpload = () => {
       const predictionResult = response.data.predicted_class;
       setPrediction(predictionResult);
 
-      // Second request: to generate data based on the prediction
       const generateResponse = await axios.post(
         "http://127.0.0.1:5000/generate",
-        { flower: response.data.predicted_class }, // Sending the prediction value
+        { flower: response.data.predicted_class }, 
         {
           headers: {
             "Content-Type": "application/json",
@@ -65,9 +65,8 @@ const ImageUpload = () => {
         }
       );
 
-      // Store the generated data in the state
       setGeneratedData(generateResponse.data);
-     // speakText(generateResponse.data.description)
+      speakText(generateResponse.data.description)
 
     } catch (err) {
       setError("Error during classification: " + err.message);
@@ -80,10 +79,9 @@ const ImageUpload = () => {
     if ('speechSynthesis' in window) {
       const utterance = new SpeechSynthesisUtterance(textToSpeak);
 
-      // Optionally, you can modify the speech parameters
       utterance.lang = 'en-US';
-      utterance.rate = 1;  // Speed of speech
-      utterance.pitch = 1; // Pitch of speech
+      utterance.rate = 1;  
+      utterance.pitch = 1; 
 
       // Use the SpeechSynthesis API to speak the text
       window.speechSynthesis.speak(utterance);
@@ -181,11 +179,11 @@ const ImageUpload = () => {
       </div>
 
       {prediction && (
-        <div className="flex flex-col justify-center w-screen h-20 bg-gray-200 mt-8">
+        <div className="flex flex-col justify-center w-1/4 h-20 mt-8">
           <button 
             type="button" 
             onClick={handleMCQ} 
-            className="px-6 py-3 bg-gradient-to-r from-green-400 to-blue-500 text-white font-semibold rounded-lg shadow-md hover:from-green-500 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-green-300 focus:ring-offset-2 transition-all duration-300"
+            className="px-6 py-3 bg-gradient-to-r from-green-400 to-blue-500 cursor-pointer text-white font-semibold rounded-lg shadow-md hover:from-green-500 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-green-300 focus:ring-offset-2 transition-all duration-300 space-x-9"
           >
             Test Yourself
           </button>
@@ -194,7 +192,7 @@ const ImageUpload = () => {
 
       {mcq && (
         <div className="w-full max-w-5xl mt-8">
-          <GenerateMCQ mcq={mcq} />
+          <GenerateMCQ mcq={mcq} flower={prediction} />
         </div>
       )}
     </div>

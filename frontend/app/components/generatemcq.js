@@ -1,11 +1,15 @@
 'use client'
 
 import React, { useState } from 'react'
+import {supabase} from '../supabase/supabaseClient'
+import {useAuth} from '../context/AuthContext'
 
-const GenerateMCQ = ({ mcq }) => {
+const GenerateMCQ = ({ mcq, flower }) => {
     const [selectedAnswers, setSelectedAnswers] = useState({});
     const [score, setScore] = useState(null);
     const [showResults, setShowResults] = useState(false);
+    const { user } = useAuth(); 
+    console.log(user.id)
 
     const handleOptionChange = (questionIndex, option) => {
         setSelectedAnswers({
@@ -22,8 +26,22 @@ const GenerateMCQ = ({ mcq }) => {
             }
         });
         setScore(calculatedScore);
+        saveScore();
         setShowResults(true);
     };
+
+    async function saveScore() {
+        const { data, error } = await supabase
+            .from('testscores')
+            .insert([
+                { testscore: score, user_id: user.id , flower:flower}
+            ])
+        if (error) {
+            console.error('Error saving score:', error);
+        } else {
+            console.log('Score saved successfully:', data);
+        }
+    }
 
     return (
         <div className="p-4 bg-gray-100 rounded shadow-md">

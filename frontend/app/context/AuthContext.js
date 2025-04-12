@@ -1,7 +1,7 @@
 // contexts/AuthContext.js
 "use client";
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { supabase } from "../supabse/supabaseClient"; // Adjust the import path as necessary
+import { supabase } from "../supabase/supabaseClient"; // Adjust the import path as necessary
 import { useRouter } from 'next/navigation';
 
 
@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
     const fetchSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setUser(session?.user ?? null);
-     
+
       setLoading(false);
     };
 
@@ -49,8 +49,23 @@ export const AuthProvider = ({ children }) => {
     try {
       const { user, error } = await supabase.auth.signUp({ email, password });
       if (error) throw error;
-      setUser(user);
-      return { user };
+      if (user) {
+        const { error: insertError } = await supabase.from('users').insert([
+          {
+            id: user.id,  
+            email: user.email,
+          
+          }
+        ]);
+
+        if (insertError) {
+          console.error("Error inserting user profile:", insertError.message);
+          return { error: insertError };
+        }
+
+        setUser(user);
+        return { user };
+      }
     } catch (error) {
       console.error("Error signing up:", error.message);
       return { error };

@@ -26,11 +26,11 @@ const GenerateMCQ = ({ mcq, flower }) => {
             }
         });
         setScore(calculatedScore);
-        saveScore();
+        saveScore(calculatedScore);
         setShowResults(true);
     };
 
-    async function saveScore() {
+    async function saveScore(score) {
         const { data, error } = await supabase
             .from('testscores')
             .insert([

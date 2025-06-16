@@ -90,9 +90,9 @@ const ImageUpload = () => {
     }
   };
 
-  // const handleClick = () => {
-  //   speakText(text);
-  // };  
+  const handleClick = () => {
+    speakText(text);
+  };  
 
   const handleMCQ = async (e) => { 
     e.preventDefault()

@@ -35,7 +35,7 @@ const HistoryPage = () => {
     }, [user])
 
     const handleRetake = (score) => {
-        router.push(`/test?flower=${score.flower}&scoreId=${score.id}`)
+        router.push(`/`)//?flower=${score.flower}&scoreId=${score.id}`)
     }
 
     return (

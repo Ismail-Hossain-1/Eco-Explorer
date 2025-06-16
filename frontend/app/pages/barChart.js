@@ -33,7 +33,7 @@ const BarChart = ({ scores }) => {
     responsive: true,
     plugins: {
       legend: { position: 'top' },
-      title: { display: true, text: 'Your Score History' },
+      title: { display: true, text: 'Your Test History' },
     },
   };
 
